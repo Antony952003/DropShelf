@@ -11,16 +11,17 @@ CONFIG="${CONFIG:-release}"
 UNIVERSAL="${UNIVERSAL:-0}"
 APP="$ROOT/build/DropShelf.app"
 
-ARCH_FLAGS=()
+# No arrays here on purpose: macOS still ships bash 3.2, where expanding an
+# empty array under `set -u` aborts with "unbound variable".
 if [ "$UNIVERSAL" = "1" ]; then
-  ARCH_FLAGS=(--arch arm64 --arch x86_64)
   echo "==> Compiling ($CONFIG, universal arm64 + x86_64)"
+  swift build -c "$CONFIG" --package-path "$ROOT" --arch arm64 --arch x86_64
+  BIN_DIR="$(swift build -c "$CONFIG" --package-path "$ROOT" --arch arm64 --arch x86_64 --show-bin-path)"
 else
   echo "==> Compiling ($CONFIG, native)"
+  swift build -c "$CONFIG" --package-path "$ROOT"
+  BIN_DIR="$(swift build -c "$CONFIG" --package-path "$ROOT" --show-bin-path)"
 fi
-
-swift build -c "$CONFIG" --package-path "$ROOT" "${ARCH_FLAGS[@]}"
-BIN_DIR="$(swift build -c "$CONFIG" --package-path "$ROOT" "${ARCH_FLAGS[@]}" --show-bin-path)"
 BINARY="$BIN_DIR/DropShelf"
 
 echo "==> Assembling bundle"
