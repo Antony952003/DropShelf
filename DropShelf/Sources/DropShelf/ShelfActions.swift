@@ -3,10 +3,18 @@ import UniformTypeIdentifiers
 
 /// Dispatcher for closure-backed menu items. Lives as a singleton so menu
 /// items never have to retain themselves as their own target.
+///
+/// The selector must NOT be called `perform(_:)`: `NSObject` already exposes
+/// `perform(_ aSelector: Selector!)` (ObjC `performSelector:`), and
+/// `#selector(MenuActionDispatcher.perform(_:))` silently binds to *that*
+/// instead. Every menu item then carried the action `performSelector:`, so a
+/// click passed an NSMenuItem where a Selector was expected and threw
+/// "unrecognized selector" — which AppKit swallows during menu tracking, so
+/// the menus looked inert.
 final class MenuActionDispatcher: NSObject {
     static let shared = MenuActionDispatcher()
 
-    @objc func perform(_ sender: NSMenuItem) {
+    @objc func fireMenuAction(_ sender: NSMenuItem) {
         (sender as? BlockMenuItem)?.invoke()
     }
 }
@@ -18,7 +26,7 @@ final class BlockMenuItem: NSMenuItem {
          enabled: Bool = true, handler: @escaping () -> Void) {
         self.handler = handler
         super.init(title: title,
-                   action: #selector(MenuActionDispatcher.perform(_:)),
+                   action: #selector(MenuActionDispatcher.fireMenuAction(_:)),
                    keyEquivalent: keyEquivalent)
         target = MenuActionDispatcher.shared
         isEnabled = enabled
