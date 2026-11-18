@@ -181,11 +181,21 @@ final class GeneralPaneController: SettingsPaneController {
         _ = addCheckbox("Show in menu bar",
                         get: { Preferences.shared.showInMenuBar },
                         set: { Preferences.shared.showInMenuBar = $0 })
-        _ = addPopUp("Menu bar icon",
-                     options: MenuBarIconStyle.allCases,
-                     titles: MenuBarIconStyle.allCases.map(\.title),
-                     get: { Preferences.shared.menuBarIcon },
-                     set: { Preferences.shared.menuBarIcon = $0 })
+        let iconPopUp = addPopUp("Menu bar icon",
+                                 options: MenuBarIconStyle.allCases,
+                                 titles: MenuBarIconStyle.allCases.map(\.title),
+                                 get: { Preferences.shared.menuBarIcon },
+                                 set: { Preferences.shared.menuBarIcon = $0 })
+        // Show the actual glyph beside each name — picking a menu bar icon
+        // from a text-only list is guesswork.
+        for (index, style) in MenuBarIconStyle.allCases.enumerated() {
+            guard let item = iconPopUp.item(at: index),
+                  let glyph = MenuBarIcon.image(for: style) else { continue }
+            let sized = glyph.copy() as? NSImage ?? glyph
+            sized.size = NSSize(width: 16, height: 16)
+            sized.isTemplate = true
+            item.image = sized
+        }
         _ = addCheckbox("Show in Dock",
                         get: { Preferences.shared.showInDock },
                         set: { Preferences.shared.showInDock = $0 })
