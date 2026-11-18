@@ -66,8 +66,8 @@ No Xcode needed, just the Command Line Tools.
 
 ```sh
 xcode-select --install          # if you don't already have it
-git clone https://github.com/Antony952003/Dropover-Shelf.git
-cd Dropover-Shelf/DropShelf
+git clone https://github.com/Antony952003/DropShelf.git
+cd DropShelf/DropShelf
 ./build.sh
 open build/DropShelf.app
 ```

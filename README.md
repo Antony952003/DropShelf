@@ -12,6 +12,8 @@ dropover-rebuild/
 └── DropShelf/
     ├── build.sh                 build + bundle + ad-hoc sign
     ├── package-release.sh       universal build, verified + zipped
+    ├── run-tests.sh             compile + run both dispatch suites
+    ├── Tests/                   regression suites (see Tests/README.md)
     ├── Package.swift
     ├── Resources/Info.plist
     ├── Tools/make-icon.swift    draws the app icon (no bundled artwork)
@@ -102,6 +104,21 @@ no function body was read.** DropShelf is original Swift written against the
 public AppKit SDK, reproducing observed *behaviour*; the icon is drawn by
 `Tools/make-icon.swift` and every other glyph is an SF Symbol.
 
+## Tests
+
+```sh
+cd DropShelf && ./run-tests.sh
+```
+
+Two suites, 31 assertions, driven through **`NSApp.sendAction`** — the dispatch
+path a real click takes, not the handlers directly. That distinction is the
+point: an earlier version called the closures directly and reported every menu
+action green while, in the shipped app, *nothing in any menu did anything*.
+See [Tests/README.md](DropShelf/Tests/README.md).
+
+No Xcode or XCTest needed, and each suite runs in an isolated `HOME` so real
+preferences and saved shelves are untouched.
+
 ## Verification performed
 
 Checked by running the built app, not just by compiling it:
@@ -140,6 +157,10 @@ snapping fired after the park animation and pulled the card flush to the screen
 edge; expanding destroyed the only control that could collapse it again; and a
 pinned shelf restored in the expanded state never built its dropdown, because
 the refresh path only repositioned an existing one.
+
+- every ⋯ menu action, the menu-bar menu, all six settings panes, the shortcut
+  recorder, and the card/dropdown controls dispatch correctly (31 assertions,
+  0 failures)
 
 Not exercised at runtime (needs real input devices, a notched display, or
 granted permissions): shake and modifier-key gestures, the notch target,
