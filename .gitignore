@@ -1,0 +1,15 @@
+# Swift / SwiftPM
+.build/
+*.o
+*.swiftmodule
+
+# Build output
+DropShelf/build/
+DropShelf/.build/
+
+# Raw REA evidence export (2.5 MB of data extracted from a commercial app —
+# see README "Provenance". Regenerate locally rather than publishing it.)
+evidence/
+
+# macOS
+.DS_Store
