@@ -72,6 +72,7 @@ ad-hoc, **rebuilding changes the code hash and the grant must be re-approved.**
 | Shortcuts | 5 recordable global actions with conflict and system-collision validation · 11 shelf shortcuts live on hover (consumed via an event tap so they don't leak to the frontmost app) |
 | Screenshots | new screenshots land on a shelf automatically, titled "Screenshots" · reads `com.apple.screencapture location` rather than assuming the Desktop · two detectors de-duplicated by path: a Spotlight `NSMetadataQuery` on `kMDItemIsScreenCapture` (filename-language and location independent) and a `DispatchSource` watch on the folder (works with Spotlight indexing off) · shots within 90s group onto one shelf · on by default |
 | Persistence | pinned shelves reopen on launch, the rest become Recent Shelves (⌥-click to remove one) · reopen last closed |
+| Menu bar | the status item glyph is **drawn**, not an SF Symbol — three fanned cards echoing the shelf's pile, as a template image so AppKit inverts it for dark menu bars and knocks it out while the menu is open. Four styles: Pile (default), Shelf, Tray, Documents |
 | Settings | 6 AppKit panes: General, Activation, Shelf, Shortcuts, Ignored Apps, About · launch at login via `SMAppService` · Show in Dock · menu-bar icon style · ignored-applications list |
 
 ## What it does not do

@@ -88,21 +88,16 @@ enum EdgeDoubleClickAction: String, CaseIterable, Codable {
 }
 
 enum MenuBarIconStyle: String, CaseIterable, Codable {
-    case traditional, document, documentTilted
+    /// Drawn, not an SF Symbol — see `MenuBarIcon`.
+    case pile, shelf
+    case traditional, document
 
     var title: String {
         switch self {
-        case .traditional: return "Traditional"
-        case .document: return "Document"
-        case .documentTilted: return "Document 2"
-        }
-    }
-
-    var symbolName: String {
-        switch self {
-        case .traditional: return "tray.and.arrow.down"
-        case .document: return "doc.on.doc"
-        case .documentTilted: return "doc.text.below.ecg"
+        case .pile: return "Pile (default)"
+        case .shelf: return "Shelf"
+        case .traditional: return "Tray"
+        case .document: return "Documents"
         }
     }
 }
@@ -216,7 +211,7 @@ final class Preferences: ObservableObject {
             Key.screenshotShelf: true,
             Key.showInMenuBar: true,
             Key.showInDock: false,
-            Key.menuBarIcon: MenuBarIconStyle.traditional.rawValue,
+            Key.menuBarIcon: MenuBarIconStyle.pile.rawValue,
             Key.launchAtLogin: false,
             Key.ignoredApplications: [String](),
         ])
@@ -343,7 +338,7 @@ final class Preferences: ObservableObject {
     }
 
     var menuBarIcon: MenuBarIconStyle {
-        get { enumValue(Key.menuBarIcon, .traditional) }
+        get { enumValue(Key.menuBarIcon, .pile) }
         set { setEnum(newValue, Key.menuBarIcon) }
     }
 

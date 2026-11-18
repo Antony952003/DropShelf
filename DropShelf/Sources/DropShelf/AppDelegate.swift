@@ -89,9 +89,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         let item = statusItem ?? NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem = item
-        let symbol = Preferences.shared.menuBarIcon.symbolName
-        item.button?.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "DropShelf")
-        item.button?.image?.isTemplate = true
+        item.button?.image = MenuBarIcon.image(for: Preferences.shared.menuBarIcon)
         item.button?.toolTip = "DropShelf"
 
         let menu = NSMenu()
