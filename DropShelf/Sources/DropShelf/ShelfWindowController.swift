@@ -262,7 +262,7 @@ final class ShelfWindowController: NSWindowController, NSWindowDelegate {
 
     /// "2 Images", "1 Folder", "3 Files" — the reference card names the kind of
     /// content it holds, not just "Files".
-    private func pillTitle() -> String {
+    func pillTitle() -> String {
         let items = shelf.items
         guard !items.isEmpty else { return "Empty" }
 

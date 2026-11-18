@@ -50,7 +50,8 @@ extension ShelfWindowController {
         }
 
         if hasTargets {
-            let noun = targets.count == 1 ? targets[0].displayName : "\(targets.count) Items"
+            // Match the pile pill's wording: "2 Images", not "2 Items".
+            let noun = targets.count == 1 ? targets[0].displayName : pillTitle()
 
             menu.addItem(BlockMenuItem(title: "Open", symbol: "arrow.up.forward.app") { [weak self] in
                 self?.open(items: targets)
@@ -204,7 +205,15 @@ extension ShelfWindowController {
         guard !apps.isEmpty else { return nil }
 
         let menu = NSMenu()
-        for app in apps.prefix(12) {
+        // Two installs of the same app (or one registered twice) otherwise show
+        // up as duplicate rows — collapse by bundle identifier.
+        var seen = Set<String>()
+        let unique = apps.filter { url in
+            let key = Bundle(url: url)?.bundleIdentifier ?? url.standardizedFileURL.path
+            return seen.insert(key).inserted
+        }
+
+        for app in unique.prefix(12) {
             let name = FileManager.default.displayName(atPath: app.path)
             let item = BlockMenuItem(title: name) {
                 let config = NSWorkspace.OpenConfiguration()
